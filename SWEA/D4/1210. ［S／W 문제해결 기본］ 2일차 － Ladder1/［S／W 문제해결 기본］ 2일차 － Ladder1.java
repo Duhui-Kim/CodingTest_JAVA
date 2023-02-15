@@ -59,17 +59,17 @@ class Solution
 			int x = N-1;
 			while(x>0) {
 				// 좌측으로 이동했을 경우 다시 우측으로 이동되지 않게 boolean을 선언한다.
-				boolean isShift = false;
+				boolean shift = false;
 				// 맨 아래 행과 맨 위의 행에는 좌우 이동이 없다는 점을 생각하여 
 				// x-1 후 좌우로 1이 있는지 체크한다.
 				x--;
 				// 좌측에 1이 있다면 0이 나올 때까지 좌측으로 이동
 				while(s-1>=0 && s-1<N && ladder[x][s-1] == 1) {
 					s--;
-					isShift = true;
+					shift = true;
 				}
 				// 좌측으로 이동하지 않았고, 우측에 1이 있다면 0이 나올 때까지 우측으로 이동
-				while(!isShift && s+1>=0 && s+1<N && ladder[x][s+1] == 1) s++;
+				while(!shift && s+1>=0 && s+1<N && ladder[x][s+1] == 1) s++;
 			}
 			sb.append("#" + testCase + " " + s + "\n");
 		}
