@@ -14,15 +14,13 @@ public class Solution {
         int testCase = sc.nextInt();
 
         for(int t=1; t<=testCase; t++) {
+            // 결과 저장할 min 선언
             min = Integer.MAX_VALUE;
             N = sc.nextInt();
             W = sc.nextInt();
             H = sc.nextInt();
 
             // 맵 static으로 입력받기
-            // 입력 받을 때 숫자를 다 세줌
-            // 0만 있는 배열이 있으면 거기는 N이 떨어질 필요가 없음!! check 배열 생성
-
             int[][] map = new int[H][W];
             for (int i = 0; i < H; i++) {
                 for (int j = 0; j < W; j++) {
@@ -53,12 +51,14 @@ public class Solution {
             return;
         }
 
+        // 새로운 입력된 map을 복제하여 새로운 newMap을 만들어준다.
         int[][] newMap = new int[H][W];
         for (int i = 0; i < H; i++) {
             newMap[i] = Arrays.copyOf(map[i], W);
         }
 
         // 내려오다가 벽돌 만나면 폭발
+        // 1일 경우는 그냥 0으로 만들고, 1보다 클 경우 queue에 넣음
         for (int i = 0; i < H; i++) {
             if (newMap[i][col] == 1) {
                 newMap[i][col] = 0;
@@ -70,6 +70,8 @@ public class Solution {
             }
         }
 
+        // 숫자만큼 사방으로 뻗어나가며 벽돌을 깬다.
+        // 이 때도 1보다 큰 수는 queue에 담는다.
         while (!queue.isEmpty()){
             int x = queue.poll();
             int y = queue.poll();
@@ -90,9 +92,8 @@ public class Solution {
             }
         }
 
-
-
         // 정렬 method
+        // 열들을 전부 아래로 정렬한다.
         for(int j=0; j<W; j++){
             int idx = H-1;
             for(int i=H-1; i>=0; i--){
@@ -101,22 +102,9 @@ public class Solution {
             while(idx>=0) newMap[idx--][j] = 0;
         }
 
-
+        // 다음 폭탄을 떨어트리러 간다.
         for(int i=0; i<W; i++){
             blockTest(newMap, i, K+1);
         }
-
-
     }
-
-    // map 복제해서 새로운거 만듦
-    // 위에서부터 아래로 내려오며 숫자가 1이면 0으로 만들고 cnt 증가
-    // 1이 아니면 폭발 진행 -> 폭발 진행 중 1보다 큰 수를 만나면 Queue에 좌표랑 값 넣어두고 0으로 만들고 cnt ++
-    // 1을 만나면 0으로 바꾸고 cnt 증가
-    // 0을 만나면 안건드림
-
-    // 정렬은 열마다 idx를 0으로 잡고 위로 올라가며 숫자를 만나면 idx에 넣고 idx ++
-
-    // map 정렬 후 N에 도달할 때까지 +1 후 다시 호출
-    // N에 도달하면 최대값 - cnt 뺸 값을 리턴함. 이게 min보다 작으면 min을 교체
 }
