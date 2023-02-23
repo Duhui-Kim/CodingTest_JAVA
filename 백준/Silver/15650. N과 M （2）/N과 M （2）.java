@@ -25,7 +25,7 @@ public class Main {
     }
 
     private static void backTracking(int[] arr, int k) {
-        // k가 M과 같아지면 결과를 출력하고 돌아간다.
+        // k가 M과 같아지면 배열에서 값을 꺼내서 sb에 입력한다.
         if(k == M) {
             for (int i = 0; i < M; i++) {
                 sb.append(arr[i] + " ");
@@ -34,6 +34,8 @@ public class Main {
             return;
         }
 
+        // k가 0일 때는 모든 수를 저장하고,
+        // k가 1 이상일 때는 이전 수와 비교해서 큰 값만 넣을 수 있다.
         for (int i = 1; i <= N; i++) {
             if(k != 0 && arr[k-1] < i) {
                 arr[k] = i;
