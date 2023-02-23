@@ -13,12 +13,24 @@ public class Solution {
             int testCase = sc.nextInt();
             int min = 0;
 
-            // 숫자를 입력받으면서 15로 나눈 몫의 최솟값을 찾는다.
+            /*
+            <숫자를 입력받으면서 15로 나눈 몫의 최솟값을 찾는다.>
+            
+            숫자를 각각 1, 2, 3, 4, 5를 빼며 진행하는데 규칙을 보면
+            5번의 사이클이 돌면 다시 원래 자리로 돌아온 뒤, 
+            이 때 수는 모두 15씩 줄어있는 상태이다.
+            
+            1 2 3 4 5 1 2 3
+            4 5 1 2 3 4 5 1
+            2 3 4 5 1 2 3 4
+            5 1 2 3 4 5 1 2
+            3 4 5 1 2 3 4 5
+             */            
             for (int i = 0; i < 8; i++) {
                 queue.offer(sc.nextInt());
                 min = min > queue.peek()/15? queue.peek()/15 : min;
             }
-
+                        
             // 몫에 15를 곱한 값을 min으로 잡는다.
             min *= 15;
 
@@ -36,7 +48,7 @@ public class Solution {
                 queue.offer(num);
                 cnt++;
             }
-            
+
             // 결과를 출력한다.
             // 이 때 queue에서 꺼낸 값에 min을 빼면 최종 결과가 나온다.
             System.out.print("#" + testCase);
