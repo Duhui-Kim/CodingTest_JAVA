@@ -105,7 +105,7 @@ public class Main {
                 while(!tmp.isEmpty()) {
                     queue.offer(tmp.poll());
                 }
-            // 가장 왼쪽 위에 있는 물고기를 먹고 queue에 넣고 check 초기화
+            // 가장 위, 가장 왼쪽에 있는 물고기를 먹고 queue에 넣고 check 초기화
             } else {
                 start = findTarget(sea, time, shark, start[0], start[1], checkTime);
                 sea[start[0]][start[1]] = 0;
@@ -128,12 +128,13 @@ public class Main {
                 isFull = false;
             }
         }
-        
+
         // 종료되면 마지막 좌표의 time값을 반환한다.
         bw.write(time[start[0]][start[1]] + "");
         bw.close();
     }
 
+    // 같은 시간에 먹을 수 있는 물고기 중 가장 위쪽, 높이가 같다면 가장 왼쪽에 있는 물고기를 찾는다.
     private static int[] findTarget(int[][] map, int[][] time, int shark, int x, int y, int checkTime){
         int[] target = new int[2];
         int min = Integer.MAX_VALUE;
