@@ -8,7 +8,6 @@ public class Main {
     private static int N;
     private static int r;
     private static int c;
-    private static int cnt = 0;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,9 +28,8 @@ public class Main {
     }
 
     private static void zMethod(int x1, int y1, int x2, int y2, int k, int start, int end) {
-        // k가 N에 도달하면 종료한다.
+        // k가 0에 도달하면 종료한다.
         if(k == 0) {
-            cnt++;
             if(x1 == r && y1 == c) System.out.println(start);
             return;
         }
@@ -40,8 +38,10 @@ public class Main {
         int midx = (x2+x1)/2;
         int midy = (y2+y1)/2;
 
+        // 이 때 값도 4등분해서 진행한다.
         int devide = (end - start) / 4;
 
+        // 시간을 단축시키기 위해 r,c가 있을 수 있는 사분면에 대한 재귀만 실행한다.
         if(r < midx && c < midy) {
             zMethod(x1, y1, midx, midy, k-1, start, start + devide);
         } else if (r < midx && c >= midy) {
