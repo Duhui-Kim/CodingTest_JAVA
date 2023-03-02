@@ -6,8 +6,12 @@ public class Solution {
     // 0부터 3까지 UP, DOWN, LEFT, RIGHT
     private static int[] dx = {-1, 1, 0, 0};
     private static int[] dy = {0, 0, -1, 1};
+    
+    // method에서 사용하기 위해 static으로 선언
     private static int H;
     private static int W;
+    
+    // 전차의 x좌표, y좌표, 방향을 저장
     private static int x;
     private static int y;
     private static int dir;
@@ -16,31 +20,36 @@ public class Solution {
         Scanner sc = new Scanner(System.in);
         StringBuilder sb = new StringBuilder();
 
+        // 테스트케이스를 받고 그만큼 반복 진행
         int testCase = Integer.parseInt(sc.nextLine());
 
         for (int i = 1; i <= testCase; i++) {
             StringTokenizer st = new StringTokenizer(sc.nextLine());
 
+            // H와 W를 입력받는다.
             H = Integer.parseInt(st.nextToken());
             W = Integer.parseInt(st.nextToken());
 
-            // map을 저장한다.
+            // 해당 크기의 char 배열을 만든다.
             char[][] map = new char[H][W];
 
+            // String으로 입력받아 char 배열 형태로 저장한다.
             for (int j = 0; j < H; j++) {
                 map[j] = sc.nextLine().toCharArray();
             }
             
+            // 좌표와 방향 초기화
             x = 0;
             y = 0;
             dir = 0;
 
-            // 전차를 찾으면 그 위치와 방향을 저장
+            // 전차를 찾으면 그 위치와 방향을 저장하고 전차를 '.'으로 바꿔둔다.
             loop:
             for (int j = 0; j < H; j++) {
                 for (int k = 0; k < W; k++) {
                     if(map[j][k] == '^' || map[j][k] == 'v' || map[j][k] == '<' || map[j][k] == '>') {
                         findTank(j, k, map[j][k]);
+                        map[j][k] = '.';
                         break loop;
                     }
                 }
@@ -62,6 +71,12 @@ public class Solution {
                     move(map, command[j]);
                 }
             }
+
+            // 마지막에 전차 위치 및 방향 표시
+            if(dir == 0) map[x][y] = '^';
+            else if (dir == 1) map[x][y] = 'v';
+            else if (dir == 2) map[x][y] = '<';
+            else map[x][y] = '>';
 
             // 결과 출력
             sb.append("#" + i + " ");
@@ -89,12 +104,6 @@ public class Solution {
             x += dx[dir];
             y += dy[dir];
         }
-
-        // 전차 위치 표시
-        if(dir == 0) map[x][y] = '^';
-        else if (dir == 1) map[x][y] = 'v';
-        else if (dir == 2) map[x][y] = '<';
-        else map[x][y] = '>';
     }
 
     private static void shoot(char[][] map) {
