@@ -1,111 +1,97 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Solution {
+    public static class Node {
+        int value;
+        Node left;
+        Node right;
+
+        public Node(int value) {
+            this.value = value;
+        }
+    }
     public static void main(String[] args) {
-
-        // 이렇게 하는거 아닌 것 같지만 풀음..
-
         Scanner sc = new Scanner(System.in);
-        StringBuilder sb = new StringBuilder();
 
         int testCase = sc.nextInt();
+        StringBuilder sb = new StringBuilder();
 
-        // testCase만큼 반복을 진행한다.
         for (int t = 1; t <= testCase; t++) {
+
             int V = sc.nextInt();
             int E = sc.nextInt();
             int n1 = sc.nextInt();
             int n2 = sc.nextInt();
 
-            // child Node로부터 가장 가까운 부모노드를 찾기 위해 listA와 listB를 만든다.
-            ArrayList<Integer> listA = new ArrayList<>();
-            ArrayList<Integer> listB = new ArrayList<>();
+            // Node를 담을 tree 배열을 생성한다.
+            Node[] tree = new Node[V + 1];
 
-            // 시작 노드가 부모 노드가 될 수도 있으니 list에 각각 추가해준다.
-            listA.add(n1);
-            listB.add(n2);
+            // 각 정점의 번호는 1부터 V까지의 정수이므로 idx에 맞게 노드를 저장한다.
+            for (int i = 1; i <= V; i++) {
+                tree[i] = new Node(i);
+            }
 
-            // 간선을 저장할 tree 배열을 만든다.
-            int[][] tree = new int[E][2];
-            
-            // 0번에는 부모, 1번에는 자식노드를 입력받아 저장한다.
+            // 간선이 주어지면 해당 값에 맞게 left child와 right child를 저장한다.
+            // 해당 노드의 부모도 저장한다.
             for (int i = 0; i < E; i++) {
-                int num = sc.nextInt();
-                int num2 = sc.nextInt();
+                int parent = sc.nextInt();
+                int child = sc.nextInt();
 
-                tree[i][0] = num;
-                tree[i][1] = num2;
-            }
-
-            // n1을 자식노드로 갖는 부모노드를 찾고, 리스트에 넣는다.
-            // 그 부모노드를 자식노드로 갖는 부모노드를 찾고.. 반복
-            // 최종적으로 맨 위의 노드를 자식노드로 갖는 부모노드는 없으므로 종료된다.
-            int findNum = n1;
-            int preSize = -1;
-            while (preSize != listA.size()) {
-                preSize = listA.size();
-                for (int i = 0; i < E; i++) {
-                    if (tree[i][1] == findNum) {
-                        listA.add(tree[i][0]);
-                        findNum = tree[i][0];
-                    }
+                if (tree[parent].left == null) {
+                    tree[parent].left = tree[child];
+                } else {
+                    tree[parent].right = tree[child];
                 }
             }
 
-            // n2도 마찬가지로 진행하며 list에 값을 넣는다.
-            findNum = n2;
-            preSize = -1;
-            while (preSize != listB.size()) {
-                preSize = listB.size();
-                for (int i = 0; i < E; i++) {
-                    if (tree[i][1] == findNum) {
-                        listB.add(tree[i][0]);
-                        findNum = tree[i][0];
-                    }
-                }
-            }
-            
-            // listA의 0번 idx는 n1을 자식으로 갖는 노드, 1번 노드는 0번 노드의 부모노드 ...
-            // 따라서 가장 가까운 부모노드는 idx가 앞쪽에 있을수록 가깝다.
-            // 해당 값과 listB의 부모노드 중 일치하는 값을 찾는다.
-            loop:
-            for (int i = 0; i < listA.size(); i++) {
-                for (int j = 0; j < listB.size(); j++) {
-                    if (listA.get(i).equals(listB.get(j))) {
-                        findNum = listA.get(i);
-                        break loop;
-                    }
-                }
-            }
+            Node Ancestor = findCommonAncestor(tree[1], tree[n1], tree[n2]);
 
-            // listA 재사용 위해 clear 진행
-            listA.clear();
-            
-            // listA에 위에서 구한 부모노드를 넣는다.
-            listA.add(findNum);
-            preSize = -1;
-            
-            // cnt는 자기자신도 cnt하므로 1부터 시작하여 자녀 노드의 수를 구한다.
-            int cnt = 1;
-            while (preSize != listA.size()) {
-                preSize = listA.size();
-                
-                // list에 있는 수가 부모노드인 배열을 찾고, 그 자녀노드를 list에 넣는다.
-                // cnt도 증가시킨다.
-                // 이 때, 중복체크를 방지하기 위해 해당 노드의 값을 -1로 바꿔놓는다.
-                for (int i = 0; i < E; i++) {
-                    if (listA.contains(tree[i][0])) {
-                        listA.add(tree[i][1]);
-                        cnt++;
-                        int[] arr = {-1, -1};
-                        tree[i] = arr;
-                    }
-                }
-            }
-            // 결과를 출력한다.
-            sb.append(String.format("#%d %d %d\n", t, findNum, cnt));
+            sb.append(String.format("#%d %d %d\n", t, Ancestor.value, findchild(Ancestor)));
         }
         System.out.println(sb);
     }
-}
 
+    private static int findchild(Node root) {
+        // root가 null이면 없는 노드이므로 0 반환
+        if(root == null) return 0;
+
+        // 내려가면서 본인 노드값 +1 해줌
+        return findchild(root.right) + findchild(root.left) + 1;
+    }
+
+    private static Node findCommonAncestor(Node root, Node n1, Node n2) {
+        // root가 null 값이면 null 반환
+        if(root == null) return null;
+
+        // root가 n1, n2와 같으면 root 반환
+        if(root == n1 && root == n2) return root;
+
+        // 왼쪽에서 n1, n2 찾기
+        Node left = findCommonAncestor(root.left, n1, n2);
+
+        // left가 null이 아니고, n1이나 n2도 아니라면 left 반환
+        if(left != null && left != n1 && left != n2) return left;
+
+        // 오른쪽에서 n1, n2 찾기
+        Node right = findCommonAncestor(root.right, n1, n2);
+
+        // right가 null이 아니고, n1이나 n2도 아니라면 right 반환
+        if(right != null && right != n1 && right != n2) return right;
+
+        // 양쪽에서 뭔가를 찾아왔다면 현재 노드가 공통조상
+        if(left != null && right != null) return root;
+
+        // 현재 루트가 n1이거나 n2이면 자기 자신을 리턴
+        if(root == n1 || root == n2) return root;
+
+        // 그 외에는 양 쪽 중 null이 아닌 값 반환
+        if(left != null) return left;
+        if(right != null) return right;
+
+        // 양쪽 모두 null이라면 null 반환
+        return null;
+    }
+
+}
