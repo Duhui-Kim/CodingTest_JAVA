@@ -1,10 +1,12 @@
+package BOJ;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class Main {
+public class _2091_동전 {
     private static int max = 0;
     private static int[] answer = new int[4];
     public static void main(String[] args) throws IOException {
@@ -28,16 +30,18 @@ public class Main {
         }
 
         // 0 cent, 1 nickel, 2 dimer, 3 quarter
+        // dp를 -1로 초기화시킨다. (0번과 money번은 0으로 놔둠)
         for (int i = 1; i < money; i++) {
             Arrays.fill(dp[i], -1);
         }
 
+        // 1번부터 money까지 반복문을 진행한다.
         for (int i = 1; i <= money; i++) {
             for (int j = 0; j < 4; j++) {
                 // i번째 값에서 price만큼 뺀 값을 인덱스로 정한다.
                 int x = i - price[j];
 
-                // 이 때 x가 1보다 작거나, 해당 값의 동전 수가 0개일 때는 지나간다.
+                // 이 때 x가 0보다 작거나, 해당 값의 동전 수가 -1개일 때는 지나간다. (-1이라는 것은 해당 금액은 진행 못했다는 뜻)
                 if(x < 0) continue;
                 if(dp[x][4] == -1) continue;
 
@@ -51,7 +55,7 @@ public class Main {
                 }
             }
         }
-        // 결과를 출력
+        // 결과를 출력 (money 이전 값이 다 -1이었으면 money는 0인 상태)
         for (int i = 0; i < 4; i++) {
             System.out.print(dp[money][i] + " ");
         }
