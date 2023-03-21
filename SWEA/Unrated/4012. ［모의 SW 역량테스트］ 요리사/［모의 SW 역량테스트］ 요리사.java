@@ -44,18 +44,16 @@ public class Solution {
             
             // 두 값의 차이의 최솟값 저장하기
             for (int i = 0; i < N-1; i++) {
-                if(check[i]) continue;
-                for (int j = i+1; j < N; j++) {
-                    if (check[j]) continue;
-                    A += map[i][j] + map[j][i];
-                }
-            }
-
-            for (int i = 0; i < N-1; i++) {
-                if(!check[i]) continue;
-                for (int j = i+1; j < N; j++) {
-                    if (!check[j]) continue;
-                    B += map[i][j] + map[j][i];
+                if(!check[i]) {
+                    for (int j = i + 1; j < N; j++) {
+                        if (check[j]) continue;
+                        A += map[i][j] + map[j][i];
+                    }
+                } else {
+                    for (int j = i+1; j < N; j++) {
+                        if (!check[j]) continue;
+                        B += map[i][j] + map[j][i];
+                    }
                 }
             }
 
