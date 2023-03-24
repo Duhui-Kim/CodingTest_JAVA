@@ -32,7 +32,8 @@ public class Solution {
                     map[i][j] = Integer.parseInt(st.nextToken());
                 }
             }
-
+            
+            // 시작점은 0 ~ N-2로 잡음 (왼쪽아래부터 반시계방향으로 회전할 것이므로 맨 왼쪽, 맨 아래쪽에서는 진행 불가능)
             for (int i = 0; i < N-1; i++) {
                 for (int j = 0; j < N-1; j++) {
                     check[map[i][j]] = true;
@@ -40,6 +41,7 @@ public class Solution {
                     check[map[i][j]] = false;
                 }
             }
+            // maxNum이 초기값과 같으면 불가능하므로 -1 출력, 그렇지 않으면 maxNum 출력
             if(maxNum == Integer.MIN_VALUE) {
                 sb.append(String.format("#%d %d\n", tc, -1));
             } else {
