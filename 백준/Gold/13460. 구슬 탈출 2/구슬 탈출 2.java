@@ -66,56 +66,30 @@ public class Main {
         int Bx = blue[0];
         int By = blue[1];
 
-        // R을 먼저 움직였으면 true, B를 먼저 움직였으면 false
+        // R을 먼저 움직여야하면 true, B를 먼저 움직여야하면 false
         boolean rb = false;
 
         // 굴리는 순서는 해당 방향에 더 가까운 애부터 굴리기
         switch (dir) {
-            // 왼쪽 굴리기
+            // 방향이 왼쪽일 때
             case 0:
-                if(Ry < By) {
-                    rb = true;
-                    rollingBall(red, dir);
-                    rollingBall(blue, dir);
-                } else {
-                    rollingBall(blue, dir);
-                    rollingBall(red, dir);
-                }
+                if(Ry < By) rb = true;
                 break;
-            // 오른쪽 굴리기
+            // 오른쪽일 때
             case 1:
-                if(Ry > By) {
-                    rb = true;
-                    rollingBall(red, dir);
-                    rollingBall(blue, dir);
-                } else {
-                    rollingBall(blue, dir);
-                    rollingBall(red, dir);
-                }
+                if(Ry > By) rb = true;
                 break;
-            // 위 굴리기
+            // 위쪽일 때
             case 2:
-                if(Rx < Bx) {
-                    rb = true;
-                    rollingBall(red, dir);
-                    rollingBall(blue, dir);
-                } else {
-                    rollingBall(blue, dir);
-                    rollingBall(red, dir);
-                }
+                if(Rx < Bx) rb = true;
                 break;
-            // 아래 굴리기
+            // 아래쪽일 때
             case 3:
-                if(Rx > Bx) {
-                    rb = true;
-                    rollingBall(red, dir);
-                    rollingBall(blue, dir);
-                } else {
-                    rollingBall(blue, dir);
-                    rollingBall(red, dir);
-                }
+                if(Rx > Bx) rb = true;
                 break;
         }
+        rollingBall(red, dir);
+        rollingBall(blue, dir);
 
         // 파란공이 구멍에 도착했다면 공 원래대로 돌리고 리턴
         if (map[blue[0]][blue[1]] == 'O') {
