@@ -12,8 +12,14 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
-        // 스위치를 담아둘 리스트
-        List<Switch> list = new ArrayList<>();
+        // 스위치를 담아둘 리스트 배열
+        List<Switch>[][] list = new ArrayList[N+1][N+1];
+
+        for(int i = 0; i <= N; i++) {
+            for(int j = 0; j <= N; j++) {
+                list[i][j] = new ArrayList<>();
+            }
+        }
 
         // 리스트에 스위치 담기
         for (int i = 0; i < M; i++) {
@@ -23,7 +29,7 @@ public class Main {
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
 
-            list.add(new Switch(x, y, a, b));
+            list[x][y].add(new Switch(a, b));
         }
 
         // map 생성 (불 켜진 방 체크)
@@ -53,36 +59,28 @@ public class Main {
             int y = arr[1];
 
             // 해당 좌표 불 켜주기
-            int chk = 1;
+            for (Switch s : list[x][y]) {
+                // 이미 켜져있으면 건너뛰기 
+                if (map[s.a][s.b]) continue;
 
-            // chk가 0이면 일치하는 좌표 없으므로 종료
-            while (chk != 0) {
-                if (list.size() == 0) break;
-                chk = 0;
-                for (Switch s : list) {
-                    if (s.x == x && s.y == y) {
-                        if (!map[s.a][s.b]) light++;
-                        map[s.a][s.b] = true;
+                light++;
+                map[s.a][s.b] = true;
 
-                        // 스위치를 켜고나서 주변을 탐방한다.
-                        // 만약 체크가 되어있다면 해당 방으로 도달할 수 있는 것이므로 해당 방의 좌표를 queue에 넣는다.
-                        for (int i = 0; i < 4; i++) {
-                            int cx = s.a + dx[i];
-                            int cy = s.b + dy[i];
+                // 스위치를 켜고나서 주변을 탐방한다.
+                // 만약 체크가 되어있다면 해당 방으로 도달할 수 있는 것이므로 체크된 방을 넣는다.
+                for (int i = 0; i < 4; i++) {
+                    int cx = s.a + dx[i];
+                    int cy = s.b + dy[i];
 
-                            if (cx < 1 || cy < 1 || cx > N || cy > N) continue;
-                            if (check[cx][cy]) {
-                                queue.offer(new int[]{cx, cy});
-                                break;
-                            }
-                        }
-                        list.remove(s);
-                        chk = 1;
+                    if (cx < 1 || cy < 1 || cx > N || cy > N) continue;
+                    if (check[cx][cy]) {
+                        queue.offer(new int[]{cx, cy});
                         break;
                     }
                 }
             }
 
+            // 사방탐색
             for (int i = 0; i < 4; i++) {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
@@ -92,10 +90,8 @@ public class Main {
                 if (!map[nx][ny]) continue;
                 if (check[nx][ny]) continue;
 
-                // 방문체크를 하고 불을 켜준다.
+                // 방문체크하고 queue에 넣어주기
                 check[nx][ny] = true;
-
-                // queue에 넣어주기
                 queue.offer(new int[]{nx, ny});
             }
 
@@ -105,13 +101,9 @@ public class Main {
 
     // 스위치 객체
     static class Switch {
-        int x;
-        int y;
         int a;
         int b;
-        private Switch(int x, int y, int a, int b) {
-            this.x = x;
-            this.y = y;
+        private Switch(int a, int b) {
             this.a = a;
             this.b = b;
         }
