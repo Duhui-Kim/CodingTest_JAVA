@@ -69,13 +69,17 @@ public class Main {
             return;
         }
 
-        // 1 ~ 5 종이를 사용가능한지 체크
+        // n칸짜리 색종이를 붙일 수 있으면 n-1칸짜리는 무조건 가능하므로 연산 줄여줌
+        boolean enable = false;
+
+        // 5 ~ 1종이를 사용가능한지 체크
         for (int l = 5; l >= 1; l--) {
             // 종이가 없으면 지나감
             if (paper[l] <= 0) continue;
 
             // 색종이 붙이기
-            if (check(x, y, l)) {
+            if (enable || check(x, y, l)) {
+                enable = true;
                 change += coloring(x, y, l, 0);
                 paper[l]--;
                 backTracking(x, y+1, k+1, change);
