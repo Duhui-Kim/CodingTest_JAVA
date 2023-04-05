@@ -126,143 +126,98 @@ public class Main {
 
     private static void outSide(Pair pair) {
         // 가장자리 탐색 (행)
-        for (int i = 0; i < W; i++) {
-            // 방문표시가 안되어있을 경우
-            if ((check[pair.keyCnt][0][i] & pair.key) != pair.key) {
-                if (map[0][i] == '*') continue;
-
-                // 가장자리가 . 이거나 키가 있는 경우 또는 문서인 경우
-                if (map[0][i] == '$' || map[0][i] == '.' || (1 << (map[0][i] - 'A') & pair.key) > 0) {
-                    if (map[0][i] == '$') {
-                        map[0][i] = '.';
-                        paper++;
-                    }
-                    check[pair.keyCnt][0][i] = check[pair.keyCnt][0][i] | pair.key;
-                    queue.offer(new Pair(0, i, pair.key, pair.keyCnt));
-                }
-                // 가장자리가 키인 경우
-                else if (map[0][i] >= 'a' && map[0][i] <= 'z') {
-
-                    int tmpKey = pair.key;
-                    int tmpKeyCnt = pair.keyCnt;
-
-                    // 이미 있는 키가 아니라면 넣기
-                    if ((tmpKey & 1 << (map[0][i] - 'a')) == 0) {
-                        tmpKey = tmpKey | 1 << (map[0][i] - 'a');
-                        tmpKeyCnt++;
-                    }
-                    if ((check[tmpKeyCnt][0][i] & tmpKey) == tmpKey) continue;
-
-                    check[tmpKeyCnt][0][i] = check[tmpKeyCnt][0][i] | tmpKey;
-                    queue.offer(new Pair(0, i, tmpKey, tmpKeyCnt));
-
-                }
-            }
-        }
-        // 가장자리 탐색 (행)
-        for (int i = 0; i < W; i++) {
-            // 방문표시가 안되어있을 경우
-            if ((check[pair.keyCnt][H-1][i] & pair.key) != pair.key) {
-                if (map[H-1][i] == '*') continue;
-
-                // 가장자리가 . 이거나 키가 있는 경우 또는 문서인 경우
-                if (map[H-1][i] == '$' || map[H-1][i] == '.' || (1 << (map[H-1][i] - 'A') & pair.key) > 0) {
-                    if (map[H-1][i] == '$') {
-                        map[H-1][i] = '.';
-                        paper++;
-                    }
-                    check[pair.keyCnt][H-1][i] = check[pair.keyCnt][H-1][i] | pair.key;
-                    queue.offer(new Pair(H-1, i, pair.key, pair.keyCnt));
-                }
-                // 가장자리가 키인 경우
-                else if (map[H-1][i] >= 'a' && map[H-1][i] <= 'z') {
-
-                    int tmpKey = pair.key;
-                    int tmpKeyCnt = pair.keyCnt;
-
-                    // 이미 있는 키가 아니라면 넣기
-                    if ((tmpKey & 1 << (map[H-1][i] - 'a')) == 0) {
-                        tmpKey = tmpKey | 1 << (map[H-1][i] - 'a');
-                        tmpKeyCnt++;
-                    }
-                    if ((check[tmpKeyCnt][H-1][i] & tmpKey) == tmpKey) continue;
-
-                    check[tmpKeyCnt][H-1][i] = check[tmpKeyCnt][H-1][i] | tmpKey;
-                    queue.offer(new Pair(H-1, i, tmpKey, tmpKeyCnt));
-
-                }
-            }
-        }
+        sideRow(pair, 0, W, 0);
+        sideRow(pair, 0, W, H-1);
 
         // 가장자리 탐색 (열)
-        for (int i = 1; i < H-1; i++) {
+        sideCol(pair, 1, H-1, 0);
+        sideCol(pair, 1, H-1, W-1);
+    }
+
+    /**
+     * 행 탐색 method
+     * @param pair
+     * @param a : 탐색 시작지점
+     * @param b : 탐색 종료지점
+     * @param c : 고정된 열의 idx
+     */
+    private static void sideRow(Pair pair, int a, int b, int c) {
+        for (int i = a; i < b; i++) {
             // 방문표시가 안되어있을 경우
-            if ((check[pair.keyCnt][i][0] & pair.key) != pair.key) {
-                if (map[i][0] == '*') continue;
+            if ((check[pair.keyCnt][c][i] & pair.key) != pair.key) {
+                if (map[c][i] == '*') continue;
 
                 // 가장자리가 . 이거나 키가 있는 경우 또는 문서인 경우
-                if (map[i][0] == '$' || map[i][0] == '.' || (1 << (map[i][0] - 'A') & pair.key) > 0) {
-                    if (map[i][0] == '$') {
-                        map[i][0] = '.';
+                if (map[c][i] == '$' || map[c][i] == '.' || (1 << (map[c][i] - 'A') & pair.key) > 0) {
+                    if (map[c][i] == '$') {
+                        map[c][i] = '.';
                         paper++;
                     }
-                    check[pair.keyCnt][i][0] = check[pair.keyCnt][i][0] | pair.key;
-                    queue.offer(new Pair(i, 0, pair.key, pair.keyCnt));
+                    check[pair.keyCnt][c][i] = check[pair.keyCnt][c][i] | pair.key;
+                    queue.offer(new Pair(c, i, pair.key, pair.keyCnt));
                 }
                 // 가장자리가 키인 경우
-                else if (map[i][0] >= 'a' && map[i][0] <= 'z') {
+                else if (map[c][i] >= 'a' && map[c][i] <= 'z') {
 
                     int tmpKey = pair.key;
                     int tmpKeyCnt = pair.keyCnt;
 
                     // 이미 있는 키가 아니라면 넣기
-                    if ((tmpKey & 1 << (map[i][0] - 'a')) == 0) {
-                        tmpKey = tmpKey | 1 << (map[i][0] - 'a');
+                    if ((tmpKey & 1 << (map[c][i] - 'a')) == 0) {
+                        tmpKey = tmpKey | 1 << (map[c][i] - 'a');
                         tmpKeyCnt++;
                     }
-                    if ((check[tmpKeyCnt][i][0] & tmpKey) == tmpKey) continue;
+                    if ((check[tmpKeyCnt][c][i] & tmpKey) == tmpKey) continue;
 
-                    check[tmpKeyCnt][i][0] = check[tmpKeyCnt][i][0] | tmpKey;
-                    queue.offer(new Pair(i, 0, tmpKey, tmpKeyCnt));
+                    check[tmpKeyCnt][c][i] = check[tmpKeyCnt][c][i] | tmpKey;
+                    queue.offer(new Pair(c, i, tmpKey, tmpKeyCnt));
 
                 }
             }
         }
-        // 가장자리 탐색 (열)
-        for (int i = 1; i < H-1; i++) {
+    }
+
+    /**
+     * 열 탐색 method
+     * @param pair
+     * @param a : 탐색 시작지점
+     * @param b : 탐색 종료지점
+     * @param c : 고정된 행의 idx
+     */
+    private static void sideCol(Pair pair, int a, int b, int c) {
+        for (int i = a; i < b; i++) {
             // 방문표시가 안되어있을 경우
-            if ((check[pair.keyCnt][i][W-1] & pair.key) != pair.key) {
-                if (map[i][W-1] == '*') continue;
+            if ((check[pair.keyCnt][i][c] & pair.key) != pair.key) {
+                if (map[i][c] == '*') continue;
 
                 // 가장자리가 . 이거나 키가 있는 경우 또는 문서인 경우
-                if (map[i][W-1] == '$' || map[i][W-1] == '.' || (1 << (map[i][W-1] - 'A') & pair.key) > 0) {
-                    if (map[i][W-1] == '$') {
-                        map[i][W-1] = '.';
+                if (map[i][c] == '$' || map[i][c] == '.' || (1 << (map[i][c] - 'A') & pair.key) > 0) {
+                    if (map[i][c] == '$') {
+                        map[i][c] = '.';
                         paper++;
                     }
-                    check[pair.keyCnt][i][W-1] = check[pair.keyCnt][i][W-1] | pair.key;
-                    queue.offer(new Pair(i, W-1, pair.key, pair.keyCnt));
+                    check[pair.keyCnt][i][c] = check[pair.keyCnt][i][c] | pair.key;
+                    queue.offer(new Pair(i, c, pair.key, pair.keyCnt));
                 }
                 // 가장자리가 키인 경우
-                else if (map[i][W-1] >= 'a' && map[i][W-1] <= 'z') {
+                else if (map[i][c] >= 'a' && map[i][c] <= 'z') {
 
                     int tmpKey = pair.key;
                     int tmpKeyCnt = pair.keyCnt;
 
                     // 이미 있는 키가 아니라면 넣기
-                    if ((tmpKey & 1 << (map[i][W-1] - 'a')) == 0) {
-                        tmpKey = tmpKey | 1 << (map[i][W-1] - 'a');
+                    if ((tmpKey & 1 << (map[i][c] - 'a')) == 0) {
+                        tmpKey = tmpKey | 1 << (map[i][c] - 'a');
                         tmpKeyCnt++;
                     }
-                    if ((check[tmpKeyCnt][i][W-1] & tmpKey) == tmpKey) continue;
+                    if ((check[tmpKeyCnt][i][c] & tmpKey) == tmpKey) continue;
 
-                    check[tmpKeyCnt][i][W-1] = check[tmpKeyCnt][i][W-1] | tmpKey;
-                    queue.offer(new Pair(i, W-1, tmpKey, tmpKeyCnt));
+                    check[tmpKeyCnt][i][c] = check[tmpKeyCnt][i][c] | tmpKey;
+                    queue.offer(new Pair(i, c, tmpKey, tmpKeyCnt));
 
                 }
             }
         }
-
     }
 
     // 좌표와 키, 키의 개수를 갖고 다닐 class
