@@ -6,11 +6,16 @@ import java.util.Arrays;
 
 public class Main {
     private static StringBuilder sb;
+    private static int max;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         // 스도쿠 맵
         int[][] map = new int[9][9];
+
+        for (int i = 0; i <= 9; i++) {
+            max = max | 1 << i;
+        }
 
         // map 입력받기 (map을 입력받으면서 0의 개수를 세준다)
         int cnt = 0;
@@ -57,25 +62,28 @@ public class Main {
         }
 
         // 이번 칸에 넣을 수 있는 숫자들 가져오기
-        ArrayList<Integer> list = findNum(map, x, y);
-        
+        int check = findNum(map, x, y);
+
         // 없다면 리턴
-        if (list.size() == 0) return;
+        if (check == max) return;
 
         // 숫자 작은것부터 넣어주고, 백트래킹
-        for(int a : list) {
-            map[x][y] = a;
-            backTracking(map, k+1, cnt, x, y+1);
-            map[x][y] = 0;
+        for (int i = 1; i <= 9; i++) {
+            if ((1 << i & check) == 0) {
+                map[x][y] = i;
+                backTracking(map, k+1, cnt, x, y+1);
+                map[x][y] = 0;
+            }
         }
     }
 
-    private static ArrayList<Integer> findNum(int[][] map, int r, int c) {
-        boolean[] check = new boolean[10];
+    // 넣을 수 있는 숫자 목록 가져오는 method
+    private static int findNum(int[][] map, int r, int c) {
+        int check = 0;
 
         for (int k = 0; k < 9; k++) {
-            check[map[r][k]] = true;
-            check[map[k][c]] = true;
+            check = check | 1 << map[r][k];
+            check = check | 1 << map[k][c];
         }
 
         int nr = r / 3 * 3;
@@ -83,16 +91,10 @@ public class Main {
 
         for (int i = nr; i < nr + 3; i++) {
             for (int j = nc; j < nc + 3; j++) {
-                check[map[i][j]] = true;
+                check = check | 1 << map[i][j];
             }
         }
 
-        ArrayList<Integer> list = new ArrayList<>();
-        for (int i = 1; i <= 9; i++) {
-            if (!check[i]) {
-                list.add(i);
-            }
-        }
-        return list;
+        return check;
     }
 }
