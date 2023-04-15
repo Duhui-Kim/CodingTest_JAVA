@@ -26,7 +26,7 @@ public class Main {
         for (int i = 0; i < N; i++) {
             char[] input = br.readLine().toCharArray();
             for (int j = 0; j < M; j++) {
-                map[i][j] = input[j] - 96;
+                map[i][j] = input[j] - 86;
             }
         }
 
@@ -39,7 +39,7 @@ public class Main {
             char[] input = br.readLine().toCharArray();
             length = Math.max(length, input.length);
             for (int j = 0; j < input.length; j++) {
-                god[0][i] = god[0][i] * 100 + (input[j] - 96);
+                god[0][i] = god[0][i] * 100 + (input[j] - 86);
             }
         }
 
