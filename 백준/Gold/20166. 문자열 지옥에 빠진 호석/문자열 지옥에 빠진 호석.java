@@ -26,7 +26,7 @@ public class Main {
         for (int i = 0; i < N; i++) {
             char[] input = br.readLine().toCharArray();
             for (int j = 0; j < M; j++) {
-                map[i][j] = input[j] - 'a';
+                map[i][j] = input[j] - 96;
             }
         }
 
@@ -37,16 +37,16 @@ public class Main {
         int length = 0;
         for (int i = 0; i < K; i++) {
             char[] input = br.readLine().toCharArray();
-            length = input.length;
+            length = Math.max(length, input.length);
             for (int j = 0; j < input.length; j++) {
-                god[0][i] = god[0][i] * 100 + (input[j] - 'a');
+                god[0][i] = god[0][i] * 100 + (input[j] - 96);
             }
         }
 
         // 문자 하나를 고른 후 백트래킹을 한다.
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                backTracking(map[i][j], i, j, 0, length-1);
+                backTracking(map[i][j], i, j, 1);
             }
         }
 
@@ -58,16 +58,17 @@ public class Main {
         System.out.println(sb);
     }
 
-    private static void backTracking(int num, int x, int y, int k, int end) {
-        // 신이 좋아하는 문자열의 크기와 같은 크기의 문자가 골라졌다면
-        // 값을 비교하기
-        if (k == end) {
-            for (int i = 0; i < K; i++) {
-                if (god[0][i] == num) {
-                    god[1][i]++;
-                }
-            }
+    private static void backTracking(int num, int x, int y, int k) {
+        // k가 5를 넘어가는 경우엔 되돌아가기
+        if (k == 5) {
             return;
+        }
+
+        // 배열에 있는 값과 비교하기
+        for (int i = 0; i < K; i++) {
+            if (god[0][i] == num) {
+                god[1][i]++;
+            }
         }
 
         // 8방 탐색을 통해 문자 하나를 정해서 넘김
@@ -75,7 +76,7 @@ public class Main {
             int nx = (x + dx[i] + N) % N;
             int ny = (y + dy[i] + M) % M;
 
-            backTracking(num * 100 + map[nx][ny], nx, ny, k+1, end);
+            backTracking(num * 100 + map[nx][ny], nx, ny, k+1);
         }
     }
 }
