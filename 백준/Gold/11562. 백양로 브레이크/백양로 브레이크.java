@@ -26,8 +26,7 @@ public class Main {
             int c = Integer.parseInt(st.nextToken());
 
             map[a][b] = 0;
-            if (c == 1) map[b][a] = 0;
-            else map[b][a] = 1;
+            map[b][a] = c == 1 ? 0 : 1;
         }
 
         // 중간에 다른 길로 우회해서 갔을 경우의 최솟값을 저장한다.
