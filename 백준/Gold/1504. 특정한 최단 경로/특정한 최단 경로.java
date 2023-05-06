@@ -9,12 +9,11 @@ import java.util.StringTokenizer;
 public class Main {
     private static ArrayList<Pair>[] pairs;
     // 0번이 1->a / 1번이 1->b / 2번이 a->b / 3번이 a->N / 4번이 b->N
-
+    private static int N;
     private static class Pair {
-        int from, next, dist;
-        private Pair(int from, int next, int dist) {
+        int from, dist;
+        private Pair(int from, int dist) {
             this.from = from;
-            this.next = next;
             this.dist = dist;
         }
     }
@@ -24,7 +23,7 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int N = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
         int E = Integer.parseInt(st.nextToken());
 
         // 최종 정답에 필요한 값 저장할 배열
@@ -32,7 +31,7 @@ public class Main {
 
         // 간선 입력받을 인접리스트
         pairs = new ArrayList[N+1];
-        
+
         for(int i=0; i<=N; i++) {
             pairs[i] = new ArrayList<>();
         }
@@ -44,8 +43,8 @@ public class Main {
             int b = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
 
-            pairs[a].add(new Pair(a, b, c));
-            pairs[b].add(new Pair(b, a, c));
+            pairs[a].add(new Pair(b, c));
+            pairs[b].add(new Pair(a, c));
         }
 
         // 거쳐야하는 두 정점 v1과 v2
@@ -100,21 +99,16 @@ public class Main {
     private static void dijkstra(int start, int[] arr) {
         PriorityQueue<Pair> queue = new PriorityQueue<>((o1, o2) -> o1.dist - o2.dist);
 
-        // 시작점과 연결된 간선들 넣기
-        for(Pair p : pairs[start]) {
-            queue.offer(p);
-        }
+        queue.offer(new Pair(start, 0));
 
         // 최단거리 갱신하며 진행
         while (!queue.isEmpty()) {
             Pair p = queue.poll();
 
-            if (arr[p.from] == INF) continue;
-            if (arr[p.from] + p.dist < arr[p.next]) {
-                arr[p.next] = arr[p.from] + p.dist;
-
-                for(Pair nxt : pairs[p.next]) {
-                    queue.offer(nxt);
+            for(Pair next : pairs[p.from]) {
+                if(arr[next.from] > arr[p.from] + next.dist) {
+                    arr[next.from] = arr[p.from] + next.dist;
+                    queue.offer(new Pair(next.from, arr[next.from]));
                 }
             }
         }
