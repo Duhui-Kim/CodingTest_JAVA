@@ -1,126 +1,88 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    public static class Cur {
-        int r;
-        int c;
-        public Cur(int r, int c) {
-            this.r = r;
-            this.c = c;
-        }
-    }
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        // 사방탐색용
-        int[] dr = {-1, 1, 0, 0};
-        int[] dc = {0, 0, -1, 1};
-
         int N = Integer.parseInt(br.readLine());
 
-        // N * N 크기의 배열 생성
-        int[][] school = new int[N][N];
+        int[][] friends = new int[N*N+1][N*N+1];
+        int[][] map = new int[N][N];
 
-        // 좋아하는 학생 배열 생성
-        int[][] prefer = new int[N*N+1][4];
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, 1, -1};
 
-        // 점수 집계용 배열
-        int[] point = {0, 1, 10, 100, 1000};
-
-        // N * N만큼 반복문 진행
-        for (int t = 0; t < N * N; t++) {
+        for (int i = 0; i < N*N; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-
-            // 학생 번호를 입력받고, 해당 배열에 선호하는 학생도 입력받음
-            int k = Integer.parseInt(st.nextToken());
-            for (int i = 0; i < 4; i++) {
-                prefer[k][i] = Integer.parseInt(st.nextToken());
+            int cur = Integer.parseInt(st.nextToken());
+            for (int j = 0; j < 4; j++) {
+                friends[cur][Integer.parseInt(st.nextToken())] = 1;
             }
 
-            int maxcnt = -1;
-            int maxbnk = -1;
+            int[] location = new int[] {0, 0};
+            int zeroCnt = -1;
+            int favorite = -1;
 
-            Cur cur = new Cur(0, 0);
+            for (int j = 0; j < N; j++) {
+                for (int k = 0; k < N; k++) {
+                    if (map[j][k] != 0) continue;
 
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
+                    int tmpZero = 0;
+                    int tmpFavorite = 0;
+                    for (int l = 0; l < 4; l++) {
+                        int nx = j + dx[l];
+                        int ny = k + dy[l];
 
-                    // 비어있는 칸과 만나면 체크를 시작
-                    if (school[i][j] == 0) {
-                        int cnt = 0;
-                        int bnk = 0;
-
-                        // 사방탐색 진행
-                        for (int m = 0; m < 4; m++) {
-                            int nr = i + dr[m];
-                            int nc = j + dc[m];
-                            // 사방 탐색을 진행하며 좋아하는 학생 수와 공백 체크
-                            // 공백이면 다음 좌표로 넘어감
-                            // 좋아하는 학생이 있으면 학생 cnt를 증가시키고 다른 좌표로 넘어감.
-                            if (nr < 0 || nc < 0 || nr >= N || nc >= N) continue;
-                            if (school[nr][nc] == 0) {
-                                bnk++;
-                            } else {
-                                for (int l = 0; l < 4; l++) {
-                                    if (school[nr][nc] == prefer[k][l]) {
-                                        cnt++;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            // 학생 수의 카운트한 값이 현재 최댓값보다 크면 업데이트해주고, 그 떄의 좌표를 저장
-                            // 같으면 bnk값을 비교해서 좌표 값 업데이트
-                            if (cnt > maxcnt) {
-                                maxcnt = cnt;
-                                maxbnk = bnk;
-                                cur.r = i;
-                                cur.c = j;
-                            } else if (cnt == maxcnt) {
-                                if (bnk > maxbnk) {
-                                    maxbnk = bnk;
-                                    cur.r = i;
-                                    cur.c = j;
-                                }
-                            }
+                        if (nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+                        if (map[nx][ny] == 0) {
+                            tmpZero++;
+                        } else if (friends[cur][map[nx][ny]] != 0) {
+                            tmpFavorite++;
                         }
+                    }
+
+                    if (tmpFavorite > favorite) {
+                        favorite = tmpFavorite;
+                        zeroCnt = tmpZero;
+                        location[0] = j;
+                        location[1] = k;
+                    } else if (tmpFavorite == favorite && tmpZero > zeroCnt) {
+                        zeroCnt = tmpZero;
+                        location[0] = j;
+                        location[1] = k;
                     }
                 }
             }
-            // 최댓값이 입력된 곳에 학생번호 입력
-            school[cur.r][cur.c] = k;
+            map[location[0]][location[1]] = cur;
         }
         int answer = 0;
-
-        // 각 좌표에 대해서 사방탐색을 진행하여, 선호하는 학생 수를 count
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 int cnt = 0;
                 for (int k = 0; k < 4; k++) {
-                    int nr = i + dr[k];
-                    int nc = j + dc[k];
-                    if(nr < 0 || nc < 0 || nr >= N || nc >= N) continue;
+                    int nx = i + dx[k];
+                    int ny = j + dy[k];
 
-                    // 일치하는 값을 찾았으면 다음 값을 찾기 위해 break
-                    for (int l = 0; l < 4; l++) {
-                        if(school[nr][nc] == prefer[school[i][j]][l]) {
-                            cnt++;
-                            break;
-                        }
-                    }
+                    if (nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+                    cnt += friends[map[i][j]][map[nx][ny]];
                 }
-                // cnt된 숫자에 맞는 포인트를 answer에 더해준다.
-                answer += point[cnt];
+                if (cnt == 0) continue;
+
+                if (cnt == 1) {
+                    answer += 1;
+                } else if (cnt == 2) {
+                    answer += 10;
+                } else if (cnt == 3) {
+                    answer += 100;
+                } else {
+                    answer += 1000;
+                }
             }
         }
-
         System.out.println(answer);
     }
 }
