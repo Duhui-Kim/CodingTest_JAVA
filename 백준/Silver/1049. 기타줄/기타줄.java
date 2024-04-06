@@ -22,17 +22,17 @@ public class Main {
             minSinglePrice = minSinglePrice > singlePrice ? singlePrice : minSinglePrice;
         }
         
-        int[] minPrice = new int[N+1];
+        int packageCount = N / 6;
+        int singleCount = N % 6;
         
-        for (int i=1; i<=N; i++) {
-            minPrice[i] = minPrice[i-1] + minSinglePrice;
-        }
+        int minPrice = minPackagePrice > minSinglePrice * 6 ? 
+            packageCount * minSinglePrice * 6 : 
+            packageCount * minPackagePrice;
         
-        for (int i=1; i<=N; i++) {
-            int tempPrice = i-6 >= 0 ? minPrice[i-6] + minPackagePrice : minPackagePrice;
-            minPrice[i] = tempPrice < minPrice[i] ? tempPrice : minPrice[i];
-        }
+        minPrice += minPackagePrice > minSinglePrice * singleCount ?
+            singleCount * minSinglePrice :
+            minPackagePrice;
         
-        System.out.println(minPrice[N]);
+        System.out.println(minPrice);
     }
 }
