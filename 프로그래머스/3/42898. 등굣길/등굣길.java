@@ -11,11 +11,11 @@ class Solution {
             for (int j=1; j<=n; j++) {
                 if (map[i][j] < 0) continue;
                 
-                long sum = map[i][j];
+                int sum = map[i][j];
                 sum += map[i-1][j] < 0 ? 0 : map[i-1][j];
                 sum += map[i][j-1] < 0 ? 0 : map[i][j-1];
                 
-                map[i][j] = (int) sum % 1000_000_007;
+                map[i][j] = sum % 1000_000_007;
             }
         }
         
