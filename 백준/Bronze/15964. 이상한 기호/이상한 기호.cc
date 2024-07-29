@@ -6,7 +6,7 @@ int main() {
 	cin.tie(0);
 	cout.tie(0);
 
-	int a, b;
+	long a, b;
 	cin >> a >> b;
 	cout << (a + b) * (a - b) << endl;
 }
