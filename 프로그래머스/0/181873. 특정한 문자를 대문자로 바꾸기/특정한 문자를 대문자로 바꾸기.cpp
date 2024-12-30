@@ -3,17 +3,11 @@
 
 using namespace std;
 
-string solution(string my_string, string alp) {
-    string answer = "";
-    
-    for (char s : my_string) {
-        if (s == '\0') break;
-        
+string solution(string my_string, string alp) {  
+    for (char& s : my_string) {
         if (s == alp[0]) {
-            answer += (char) (s - 32);
-        } else {
-            answer += s;
+            s -= 32;
         }
     }
-    return answer;
+    return my_string;
 }
